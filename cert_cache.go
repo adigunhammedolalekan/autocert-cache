@@ -10,14 +10,14 @@ import (
 
 type Cert struct {
 	CertKey string
-	Data string
+	Data    string
 }
 
 // DbCertificateCache implements autocert.Cache interface to provide
 // a db cache module for our https certs.
 type DbCertificateCache struct {
-	db *gorm.DB
-	mtx sync.RWMutex
+	db            *gorm.DB
+	mtx           sync.RWMutex
 	inMemoryCache map[string][]byte
 }
 
@@ -81,7 +81,7 @@ func (c *DbCertificateCache) Put(ctx context.Context, key string, data []byte) e
 		if err := c.db.Create(newCert).Error; err != nil {
 			return err
 		}
-	}else {
+	} else {
 		if err := c.db.Table("certs").Where("cert_key = ?", key).Update("data", string(data)).Error; err != nil {
 			return err
 		}
