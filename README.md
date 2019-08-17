@@ -1,5 +1,5 @@
 ### autocert-cache
-Database backed certs cache for https://github.com/golang/crypto/tree/master/acme/autocert. This package implements `autocert.Cache` interface to provide a database backed cache. It works well when app is deployed in a container and you want LetsEncrypt certificates to be around while you deploy your apps steadily.
+Database backed certs cache for `autocert` https://github.com/golang/crypto/tree/master/acme/autocert. This package implements `autocert.Cache` interface to provide a database backed cache. It works well when app is deployed in a container and you want LetsEncrypt certificates to be around while you deploy your apps steadily.
 
 
 ## Usage
