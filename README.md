@@ -18,4 +18,4 @@ Then use `cache.NewDbCache(dbDialect, dbConnectionUrl)` to initialize your `auto
 
 You can then use `autocert.Manager` however you want, the Database cache would be utilize underneath.
 
-Note: This package is using https://github.com/jinzhu/gorm, `dialect` and `connectUri` from `cache.NewDbCache(dialect, connectUri)` could be any string supported by GORM
+Note: This package is using https://github.com/jinzhu/gorm to interact with the underlying, `dialect` and `connectUri` from `cache.NewDbCache(dialect, connectUri)` could be any string supported by GORM
