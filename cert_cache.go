@@ -2,6 +2,7 @@ package autocertcache
 
 import (
 	"context"
+	"encoding/base64"
 	"gorm.io/gorm"
 	"sync"
 )
@@ -44,7 +45,10 @@ func (c *DbCertificateCache) Get(ctx context.Context, key string) ([]byte, error
 	if err != nil {
 		return nil, err
 	}
-	data := []byte(cert.Data)
+	data, err := base64.StdEncoding.DecodeString(cert.Data)
+	if err != nil {
+		return nil, err
+	}
 	// update inMemory cache
 	c.mtx.Lock()
 	c.inMemoryCache[key] = data
@@ -67,13 +71,12 @@ func (c *DbCertificateCache) getCert(key string) (*Cert, error) {
 func (c *DbCertificateCache) Put(ctx context.Context, key string, data []byte) error {
 	_, err := c.getCert(key)
 	if err == gorm.ErrRecordNotFound {
-		newCert := &Cert{CertKey: key}
-		newCert.Data = string(data)
+		newCert := &Cert{CertKey: key, Data: base64.StdEncoding.EncodeToString(data)}
 		if err := c.db.Create(newCert).Error; err != nil {
 			return err
 		}
 	} else {
-		if err := c.db.Table("certs").Where("cert_key = ?", key).Update("data", string(data)).Error; err != nil {
+		if err := c.db.Table("certs").Where("cert_key = ?", key).Update("data", base64.StdEncoding.EncodeToString(data)).Error; err != nil {
 			return err
 		}
 	}
