@@ -23,14 +23,7 @@ type DbCertificateCache struct {
 
 // NewDbCache creates a *DbCertificate. This function will try to connect
 // to db using the provided url and dialect.
-func NewDbCache(dialect, connectionUrl string) (*DbCertificateCache, error) {
-	db, err := gorm.Open(dialect, connectionUrl)
-	if err != nil {
-		return nil, err
-	}
-	if err := db.DB().Ping(); err != nil {
-		return nil, err
-	}
+func NewDbCache(db *gorm.DB) (*DbCertificateCache, error) {
 	db.AutoMigrate(&Cert{})
 	c := &DbCertificateCache{db: db}
 	c.inMemoryCache = make(map[string][]byte)

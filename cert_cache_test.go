@@ -2,6 +2,8 @@ package autocertcache
 
 import (
 	"context"
+	"github.com/jinzhu/gorm"
+	"log"
 	"testing"
 )
 
@@ -9,7 +11,7 @@ const testDbUrl = "root:passcode@tcp(localhost:3306)/test_db?charset=utf8&parseT
 
 func TestDbCertificateCache_Get(t *testing.T) {
 	ctx := context.Background()
-	cache, err := NewDbCache("mysql", testDbUrl)
+	cache, err := NewDbCache(connectDB())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -28,7 +30,7 @@ func TestDbCertificateCache_Get(t *testing.T) {
 
 func TestDbCertificateCache_Put(t *testing.T) {
 	ctx := context.Background()
-	cache, err := NewDbCache("mysql", testDbUrl)
+	cache, err := NewDbCache(connectDB())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -53,7 +55,7 @@ func TestDbCertificateCache_Put(t *testing.T) {
 
 func TestDbCertificateCache_Delete(t *testing.T) {
 	ctx := context.Background()
-	cache, err := NewDbCache("mysql", testDbUrl)
+	cache, err := NewDbCache(connectDB())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -71,4 +73,17 @@ func TestDbCertificateCache_Delete(t *testing.T) {
 	if err == nil || data != nil {
 		t.Fatal("data should be nil!")
 	}
+}
+
+func connectDB() *gorm.DB {
+	db, err := gorm.Open("mysql", testDbUrl)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	if err := db.DB().Ping(); err != nil {
+		log.Println(err)
+		return nil
+	}
+	return db
 }
